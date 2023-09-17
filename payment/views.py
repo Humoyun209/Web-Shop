@@ -1,11 +1,10 @@
 from decimal import Decimal
+from orders.models import Order
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 import stripe
-
-from orders.models import Order
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
