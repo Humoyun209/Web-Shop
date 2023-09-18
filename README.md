@@ -2,10 +2,10 @@
 
 **The following functionality is made in the project:**
 
-- Сохранение корзину пользователя в сеансах Django
-- Управление заказы пользователя
-- Оформление заказов с помощью шлюз оплаты Stripe
-- Автоматическое генерирование чек для пользователей
+- Saving a user's shopping cart in Django sessions
+- Managing user orders
+- Making orders using the Stripe payment gateway
+- Automatic receipt generation for users
 
 **To run applications:**
 
