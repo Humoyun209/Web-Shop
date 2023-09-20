@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from orders.models import Order
+from payment.tasks import invoice_to_email
 
 
 @csrf_exempt
@@ -31,5 +32,6 @@ def stripe_webhook(request: HttpRequest) -> HttpResponse:
             order.stripe_id = session.payment_intent
             order.paid = True
             order.save()
+            invoice_to_email.delay(order.id)
     
     return HttpResponse(status=200)
