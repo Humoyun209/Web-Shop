@@ -33,5 +33,4 @@ def stripe_webhook(request: HttpRequest) -> HttpResponse:
             order.paid = True
             order.save()
             invoice_to_email.delay(order.id)
-    
     return HttpResponse(status=200)

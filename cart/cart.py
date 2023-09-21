@@ -27,7 +27,7 @@ class Cart:
     def get_discount(self):
         if self.coupon:
             return (self.coupon.discount / Decimal(100)) * self.get_total_price()
-        return 0
+        return Decimal(0)
     
     def get_total_price_after_discount(self):
         return self.get_total_price() - self.get_discount()

@@ -38,7 +38,7 @@ class Order(models.Model):
         ]
     
     def get_total_cost_before_discount(self):
-        return sum(item.price for item in self.items.all())
+        return sum(item.price * item.quantity for item in self.items.all())
     
     def get_discount(self):
         total_cost = self.get_total_cost_before_discount()
