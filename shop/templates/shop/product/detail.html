@@ -7,9 +7,9 @@
 {% block content %}
     <div class="product-detail">
         {% if product.image %} 
-        <img src={{ product.image.url }}>
+            <img src={{ product.image.url }}>
         {% else %}
-        <img src="{% static "img/no_image.png" %}">
+            <img src="{% static "img/no_image.png" %}">
         {% endif %}
         <h1>{{ product.name }}</h1>
         <h2>
@@ -24,5 +24,17 @@
             <input style="cursor: pointer;"  type="submit" value="Add to cart">
         </form>
         {{ product.description|linebreaks }}
+    </div>
+    <h1 style="margin-top: 50px;">Recommended products: </h1>
+    <div style="margin: 50px; align-items: center; display: flex; flex-wrap: wrap; gap: 50px;">
+        {% for product in recommended_products %}
+        <a href="{{ product.get_absolute_url }}">
+            <img width="200px" src="{{ product.image.url }}" alt="{{ product.title }}">
+            <div style="display: flex; justify-content: space-between;">
+            <h3 style="width: 200px;">{{ product.name }}</h3>
+            <h5>$ {{ product.price }}</h5>
+            </div>
+        </a>
+        {% endfor %}
     </div>
 {% endblock %}

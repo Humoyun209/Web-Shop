@@ -75,6 +75,18 @@
       </tr>
     </tbody>
   </table>
+  <h1>Recommended products: </h1>
+  <div style="margin: 50px; align-items: center; display: flex; flex-wrap: wrap; gap: 50px;">
+    {% for product in recommended_products %}
+      <a href="{{ product.get_absolute_url }}">
+        <img width="200px" src="{{ product.image.url }}" alt="{{ product.title }}">
+        <div style="display: flex; justify-content: space-between;">
+          <h3 style="width: 200px;">{{ product.name }}</h3>
+          <h5>$ {{ product.price }}</h5>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
   <p>Apply a coupon:</p>
   <form action="{% url "coupons:apply" %}" method="post">
     {{ coupon_apply_form }}

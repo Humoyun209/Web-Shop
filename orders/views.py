@@ -10,10 +10,13 @@ from cart.cart import Cart
 from orders.forms import OrderCreateForm
 from orders.models import Order, OrderItem
 from orders.tasks import send_message_about_order_created
+from shop.models import Product
+from shop.recommender import Recommender
 
 
 def order_create(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     cart: Cart = Cart(request)
+    r: Recommender = Recommender()
     if request.method == "POST":
         form: OrderCreateForm = OrderCreateForm(request.POST)
         if form.is_valid():
@@ -22,6 +25,7 @@ def order_create(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
                 order.coupon = cart.coupon
                 order.discount = cart.coupon.discount
             order.save()
+            with_products: list[Product] = []
             for item in cart:
                 OrderItem.objects.create(
                     order=order,
@@ -29,6 +33,8 @@ def order_create(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
                     quantity=item["quantity"],
                     product=item["product"],
                 )
+                with_products.append(item['product'])
+            r.products_bought(with_products)
             cart.clear()
             send_message_about_order_created.delay(order.id)
             request.session["order_id"] = order.id
