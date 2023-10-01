@@ -6,26 +6,28 @@ from shop.models import Product
 from django.conf import settings
 from django.db import models
 from django.core.validators import MaxValueValidator
+from django.utils.translation import gettext as _
 
 
 
 
 class Order(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField()
-    address = models.CharField(max_length=250)
-    postal_code = models.CharField(max_length=20)
-    city = models.CharField(max_length=100)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    paid = models.BooleanField(default=False)
-    stripe_id = models.CharField(max_length=250, blank=True)
+    first_name = models.CharField(_('first name'), max_length=50)
+    last_name = models.CharField(_('last name'), max_length=50)
+    email = models.EmailField(_('email'), )
+    address = models.CharField(_('address'), max_length=250)
+    postal_code = models.CharField(_('postal code'), max_length=20)
+    city = models.CharField(_('city'), max_length=100)
+    created = models.DateTimeField(_('created'), auto_now_add=True)
+    updated = models.DateTimeField(_('updated'), auto_now=True)
+    paid = models.BooleanField(_('paid'), default=False)
+    stripe_id = models.CharField(_('stripe id'), max_length=250, blank=True)
     coupon = models.ForeignKey(Coupon, 
                                on_delete=models.SET_NULL,
                                related_name='orders',
-                               blank=True, null=True)
-    discount = models.PositiveBigIntegerField(default=0,
+                               blank=True, null=True,
+                               verbose_name=_('coupon'),)
+    discount = models.PositiveBigIntegerField(_('discount'), default=0,
                                               validators=[MaxValueValidator(100)])
     
     def __str__(self) -> str:

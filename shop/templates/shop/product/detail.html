@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-
+{% load i18n %}
 {% load static %}
 {% block title %}
     {{ product.name }}
@@ -21,11 +21,11 @@
         <form action="{% url "cart:cart_add" product.id %}" method="post">
             {{ cart_product_form }}
             {% csrf_token %}
-            <input style="cursor: pointer;"  type="submit" value="Add to cart">
+            <input style="cursor: pointer;"  type="submit" value="{% trans "Add to cart" %}">
         </form>
         {{ product.description|linebreaks }}
     </div>
-    <h1 style="margin-top: 50px;">Recommended products: </h1>
+    <h3 style="margin-top: 50px;">{% trans "People who bought this also bought" %}</h3>
     <div style="margin: 50px; align-items: center; display: flex; flex-wrap: wrap; gap: 50px;">
         {% for product in recommended_products %}
         <a href="{{ product.get_absolute_url }}">
