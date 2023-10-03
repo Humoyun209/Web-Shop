@@ -1,5 +1,6 @@
 {% extends "shop/base.html" %}
 {% load i18n %}
+{% load recommended_tag %}
 {% load static %}
 {% block title %}
     {{ product.name }}
@@ -25,16 +26,5 @@
         </form>
         {{ product.description|linebreaks }}
     </div>
-    <h3 style="margin-top: 50px;">{% trans "People who bought this also bought" %}</h3>
-    <div style="margin: 50px; align-items: center; display: flex; flex-wrap: wrap; gap: 50px;">
-        {% for product in recommended_products %}
-        <a href="{{ product.get_absolute_url }}">
-            <img width="200px" src="{{ product.image.url }}" alt="{{ product.title }}">
-            <div style="display: flex; justify-content: space-between;">
-            <h3 style="width: 200px;">{{ product.name }}</h3>
-            <h5>$ {{ product.price }}</h5>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
+    {% get_recommended_products recommended_products=recommended_products %}
 {% endblock %}

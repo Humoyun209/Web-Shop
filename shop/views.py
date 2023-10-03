@@ -10,9 +10,12 @@ def product_list(request: HttpRequest, category_slug=None) -> HttpResponse:
     category = None
     categories = Category.objects.all()
     products = Product.objects.all()
+    language = request.LANGUAGE_CODE
 
     if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
+        category = get_object_or_404(Category, 
+                                     translations__slug=category_slug,
+                                     translations__language_code=language)
         products = get_list_or_404(Product, category=category)
 
     return render(
@@ -27,9 +30,11 @@ def product_list(request: HttpRequest, category_slug=None) -> HttpResponse:
 
 
 def product_detail(request: HttpRequest, id: int, slug: str) -> HttpResponse:
+    language = request.LANGUAGE_CODE
     product = get_object_or_404(Product, 
                                 id=id,
-                                slug=slug,
+                                translations__slug=slug,
+                                translations__language_code=language,
                                 available=True)
     r = Recommender()
     recommended_products = r.suggest_products_for([product], 4)

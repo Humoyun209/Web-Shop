@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load static %}
+<h2 style="margin-top: 100px;">{% trans "People who bought this also bought:" %}</h2>
+<div style="margin: 50px; align-items: center; display: flex; flex-wrap: wrap; gap: 50px;">
+    {% for product in recommended_products %}
+    <a href="{{ product.get_absolute_url }}">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static " img/no_image.png" %}{% endif %}">
+        <div style="display: flex; justify-content: space-between;">
+            <h3 style="width: 200px;">{{ product.name }}</h3>
+            <h5>$ {{ product.price }}</h5>
+        </div>
+    </a>
+    {% endfor %}
+</div>

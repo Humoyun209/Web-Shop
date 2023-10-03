@@ -1,4 +1,6 @@
 {% extends "shop/base.html" %}
+{% load i18n %}
+{% load recommended_tag %}
 {% load static %}
 
 {% block title %}
@@ -33,13 +35,13 @@
               <form action="{% url "cart:cart_add" product.id %}" method="post">
                 {{ item.update_quantity_form.quantity }}
                 {{ item.update_quantity_form.override }}
-                <input type="submit" value="Update">
+                <input type="submit" value="{% trans "Update" %}">
                 {% csrf_token %}
               </form>
             </td>
             <td>
               <form action="{% url "cart:cart_remove" product.id %}" method="post">
-                <input type="submit" value="Remove">
+                <input type="submit" value="{% trans "Remove" %}">
                 {% csrf_token %}
               </form>
             </td>
@@ -69,24 +71,13 @@
         
       {% endif %}
       <tr class="total">
-        <td>Total</td>
+        <td>{% trans "Total" %}</td>
         <td colspan="4"></td>
         <td class="num">${{ cart.get_total_price_after_discount|floatformat:2 }}</td>
       </tr>
     </tbody>
   </table>
-  <h1>Recommended products: </h1>
-  <div style="margin: 50px; align-items: center; display: flex; flex-wrap: wrap; gap: 50px;">
-    {% for product in recommended_products %}
-      <a href="{{ product.get_absolute_url }}">
-        <img width="200px" src="{{ product.image.url }}" alt="{{ product.title }}">
-        <div style="display: flex; justify-content: space-between;">
-          <h3 style="width: 200px;">{{ product.name }}</h3>
-          <h5>$ {{ product.price }}</h5>
-        </div>
-      </a>
-    {% endfor %}
-  </div>
+  {% get_recommended_products recommended_products=recommended_products%}
   <p>{% trans "Apply a coupon:" %}</p>
   <form action="{% url "coupons:apply" %}" method="post">
     {{ coupon_apply_form }}
@@ -96,7 +87,7 @@
   <p class="text-right">
     <a href="{% url "shop:product_list" %}" class="button
     light">{% trans "Continue shopping" %}</a>
-    <a href="{% url "orders:order_create" %}" id="checkout" class="button">Checkout</a>
+    <a href="{% url "orders:order_create" %}" id="checkout" class="button">{% trans "Checkout" %}</a>
   </p>
 {% endblock %}
 <script>
