@@ -14,35 +14,34 @@ from shop.models import Product
 from shop.recommender import Recommender
 
 
-def order_create(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
-    cart: Cart = Cart(request)
-    r: Recommender = Recommender()
-    if request.method == "POST":
-        form: OrderCreateForm = OrderCreateForm(request.POST)
+def order_create(request):
+    cart = Cart(request)
+    if request.method == 'POST':
+        form = OrderCreateForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
             if cart.coupon:
                 order.coupon = cart.coupon
                 order.discount = cart.coupon.discount
             order.save()
-            with_products: list[Product] = []
             for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    price=item["price"],
-                    quantity=item["quantity"],
-                    product=item["product"],
-                )
-                with_products.append(item['product'])
-            r.products_bought(with_products)
+                OrderItem.objects.create(order=order,
+                                        product=item['product'],
+                                        price=item['price'],
+                                        quantity=item['quantity'])
+            # clear the cart
             cart.clear()
+            # launch asynchronous task
             send_message_about_order_created.delay(order.id)
-            request.session["order_id"] = order.id
-            return redirect(reverse("payment:process"))
-        return render(request, "orders/order/created.html", {"order": order})
+            # set the order in the session
+            request.session['order_id'] = order.id
+            # redirect for payment
+            return redirect(reverse('payment:process'))
     else:
-        form: OrderCreateForm = OrderCreateForm()
-        return render(request, "orders/order/create.html", {"form": form})
+        form = OrderCreateForm()
+    return render(request,
+                  'orders/order/create.html',
+                  {'cart': cart, 'form': form})
 
 
 @staff_member_required
